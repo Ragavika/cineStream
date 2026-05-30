@@ -63,12 +63,7 @@ Deployment
 
 ---
 
-## 📜 License
-This project is licensed under the MIT License.
-
----
-
-## 🙏 Acknowledgements
+Acknowledgements
 - [TMDB](https://www.themoviedb.org/) for the movie data API
 - React + Vite for the development framework
 ```
