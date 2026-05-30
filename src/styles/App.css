@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #111;
+  color: #fff;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+.search-bar input {
+  padding: 8px;
+  width: 250px;
+  border-radius: 4px;
+  border: none;
+}
+
+.search-bar button {
+  padding: 8px 12px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 4px;
+  background: #e50914;
+  color: white;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background: #222;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 6px;
+}
