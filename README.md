@@ -70,3 +70,8 @@ Acknowledgements
 - React + Vite for the development framework
 ```
 
+
+
+here is the screenshot my cinestream application
+
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/28c2d350-c138-4db6-8d81-9b8dcfc1ded5" />
