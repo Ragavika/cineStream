@@ -61,6 +61,8 @@ Deployment
   - Add `VITE_TMDB_API_KEY` under **Settings → Environment Variables**
   - Redeploy to make the app live
 
+- here is the website 
+-    https://cine-stream-beige.vercel.app/
 ---
 
 Acknowledgements
