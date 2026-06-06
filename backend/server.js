@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 });
 
 // --- API Endpoints ---
-app.get("/movies/popular", async (req, res) => {
+app.get("/api/movies/popular", async (req, res) => {
   try {
     const page = req.query.page || 1;
     const response = await axios.get(`${BASE_URL}/movie/popular`, {
@@ -52,7 +52,7 @@ app.get("/movies/popular", async (req, res) => {
   }
 });
 
-app.get("/movies/search", async (req, res) => {
+app.get("/api/movies/search", async (req, res) => {
   try {
     const { query, page = 1 } = req.query;
     if (!query) {
