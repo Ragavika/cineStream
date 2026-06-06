@@ -1,16 +1,77 @@
-# React + Vite
+Cine‑Stream
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight movie discovery web application built with **React + Vite**, powered by the **TMDB API**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Features
+- Browse **popular movies** on load
+- **Search bar** to find movies by title
+- Responsive **movie grid** with poster, title, release year, and rating
+- Clean UI with footer attribution to TMDB
+- Environment variable support for secure API key management
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Project Structure
+```
+cine-stream/
+├── public/              # Static assets
+├── src/
+│   ├── api/             # TMDB API helper functions
+│   ├── components/      # Reusable UI (MovieCard, MovieGrid, SearchBar)
+│   ├── pages/           # Page-level views (Home, SearchResults, MovieDetails)
+│   ├── styles/          # CSS files for layout/design
+│   ├── App.jsx          # Root component
+│   └── main.jsx         # Entry point
+├── .env                 # Environment variables (API key)
+├── package.json
+└── vite.config.js
+```
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Setup Instructions
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/your-username/cine-stream.git
+   cd cine-stream
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file in the project root:
+   ```env
+   VITE_TMDB_API_KEY=your_api_key_here
+   ```
+
+4. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+Deployment
+- Works locally at `http://localhost:5173`
+- Deploy easily to **Vercel**:
+  - Add `VITE_TMDB_API_KEY` under **Settings → Environment Variables**
+  - Redeploy to make the app live
+
+- here is the website 
+-    https://cine-stream-beige.vercel.app/
+---
+
+Acknowledgements
+- [TMDB](https://www.themoviedb.org/) for the movie data API
+- React + Vite for the development framework
+
+
+
+here is the screenshot of my single page application of cinestream
+
+<img width="1920" height="1020" alt="Image" src="https://github.com/user-attachments/assets/28c2d350-c138-4db6-8d81-9b8dcfc1ded5" />
+
