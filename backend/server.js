@@ -5,26 +5,24 @@ import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Resolve __dirname in ES modules
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from .env in the project root
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Enable CORS
+
 app.use(cors());
 
-// Middleware to parse JSON
+
 app.use(express.json());
 
 const TMDB_API_KEY = process.env.VITE_TMDB_API_KEY || process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
-// Middleware to check if API key exists
 app.use((req, res, next) => {
   if (!TMDB_API_KEY) {
     return res
@@ -34,7 +32,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// --- API Endpoints ---
+
 app.get("/api/movies/popular", async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -72,7 +70,7 @@ app.get("/api/movies/search", async (req, res) => {
   }
 });
 
-// Example posts endpoints
+
 app.get("/posts", (req, res) => res.json({ message: "GET /posts route active" }));
 app.get("/posts/:id", (req, res) =>
   res.json({ message: `GET /posts/${req.params.id} route active` })
@@ -87,14 +85,14 @@ app.delete("/posts/:id", (req, res) =>
   res.json({ message: `DELETE /posts/${req.params.id} route active` })
 );
 
-// --- Serve React frontend build ---
+
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
 });
 
-// --- Start server ---
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
