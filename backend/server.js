@@ -7,13 +7,11 @@ import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import dns from "node:dns";
 
-// Force public DNS resolution for Atlas SRV records in restricted networks.
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from the backend and project root
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 dotenv.config({ path: path.resolve(__dirname, "../frontend/.env") });
@@ -22,14 +20,23 @@ dotenv.config({ path: path.resolve(__dirname, "../frontend/.env.txt") });
 const app = express();
 const DEFAULT_PORT = Number(process.env.PORT) || 5001;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const mongoUri = process.env.MONGO_URI?.trim();
 
 const connectMongo = async () => {
   if (!mongoUri) {
-    console.warn("⚠️ MONGO_URI is not set. MongoDB-backed routes are disabled.");
+    console.warn("MONGO_URI is not set. MongoDB-backed routes are disabled.");
     return;
   }
 
@@ -38,15 +45,14 @@ const connectMongo = async () => {
       serverSelectionTimeoutMS: 10000,
       family: 4,
     });
-    console.log("✅ Connected to MongoDB Atlas");
+    console.log("Connected to MongoDB Atlas");
   } catch (err) {
-    console.warn("⚠️ MongoDB is unavailable right now; continuing without database routes.", err.message);
+    console.warn("MongoDB is unavailable right now; continuing without database routes.", err.message);
   }
 };
 
 await connectMongo();
 
-// ✅ Define Post schema & model
 const postSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
@@ -54,7 +60,6 @@ const postSchema = new mongoose.Schema({
 });
 const Post = mongoose.model("Post", postSchema);
 
-// TMDB API setup
 const TMDB_API_KEY = process.env.VITE_TMDB_API_KEY || process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
@@ -65,7 +70,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// TMDB routes
 app.get("/api/movies/popular", async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -93,7 +97,6 @@ app.get("/api/movies/search", async (req, res) => {
   }
 });
 
-// ✅ Replace placeholder post routes with MongoDB CRUD
 const ensureMongoReady = (req, res, next) => {
   if (mongoose.connection.readyState === 1) {
     return next();
@@ -104,45 +107,43 @@ const ensureMongoReady = (req, res, next) => {
   });
 };
 
-app.get("/posts", ensureMongoReady, async (req, res) => {
-  const posts = await Post.find();
+app.get("/api/posts", ensureMongoReady, async (req, res) => {
+  const posts = await Post.find().sort({ createdAt: -1 });
   res.json(posts);
 });
 
-app.get("/posts/:id", ensureMongoReady, async (req, res) => {
+app.get("/api/posts/:id", ensureMongoReady, async (req, res) => {
   const post = await Post.findById(req.params.id);
   if (!post) return res.status(404).json({ error: "Post not found" });
   res.json(post);
 });
 
-app.post("/posts", ensureMongoReady, async (req, res) => {
+app.post("/api/posts", ensureMongoReady, async (req, res) => {
   const post = new Post(req.body);
   await post.save();
   res.status(201).json(post);
 });
 
-app.put("/posts/:id", ensureMongoReady, async (req, res) => {
+app.put("/api/posts/:id", ensureMongoReady, async (req, res) => {
   const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
   if (!post) return res.status(404).json({ error: "Post not found" });
   res.json(post);
 });
 
-app.delete("/posts/:id", ensureMongoReady, async (req, res) => {
+app.delete("/api/posts/:id", ensureMongoReady, async (req, res) => {
   const post = await Post.findByIdAndDelete(req.params.id);
   if (!post) return res.status(404).json({ error: "Post not found" });
   res.json({ message: "Post deleted successfully" });
 });
 
-// Serve frontend
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
 });
 
-// Start server with automatic fallback if the default port is busy
 const startServer = (port = DEFAULT_PORT) => {
   const server = app.listen(port, "0.0.0.0", () => {
-    console.log(`🚀 Server running on port ${port}`);
+    console.log(`Server running on port ${port}`);
   });
 
   server.on("error", (err) => {
@@ -166,7 +167,7 @@ app.get("/ping", async (req, res) => {
     }
 
     await mongoose.connection.db.admin().ping();
-    res.json({ message: "✅ Server and MongoDB Atlas are alive!" });
+    res.json({ message: "Server and MongoDB Atlas are alive!" });
   } catch (error) {
     console.error("Ping failed:", error);
     res.status(503).json({ error: "MongoDB ping failed. Check your Atlas URI and network access." });
